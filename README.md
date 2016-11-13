@@ -32,12 +32,91 @@ For each extractor, one defines:
 Currently, Dibbuk supports 12 scraping commands:
 
 ###getTag
+Get the text content of the first occurance of a tag.
+
+Parameter: 
++ tag: The tag to scrape
+
+####Example
+
+```json
+{
+    "key": "bold",
+    "command": "getTag",
+    "tag": "b"
+}
+```
+
+Get the text enclosed between the first occurence of the <b></b> tags and returns it under key "bold".
+
+<b>one</b> and <b>two</b> returns Map("bold" -> "one")
 
 ###getTags
 
+Get the text content of all the occurances of a tag.
+
+Parameter: 
++ tag: The tag to scrape
+
+####Example
+
+```json
+{
+    "key": "bolds",
+    "command": "getTags",
+    "tag": "b"
+}
+```
+
+Get the text enclosed between all the occurences of the <b></b> tags and returns them under key "bolds".
+
+<b>one</b> and <b>two</b> returns Map("bolds" -> List("one","two"))
+
 ###getAttribute
 
+Get the text content of the first occurance of an attribute.
+
+Parameters: 
++ att: The attribute to scrape
++ tag: The tag containing the attribute to scrape
+
+####Example
+
+```json
+{
+    "key": "url",
+    "command": "getAttribute",
+    "att": "href",
+    "tag": "a"
+}
+```
+
+Get the text value of the first occurence of <a href=""> tag and returns it under key "url".
+
+<a href="http://one.com">one</a> and <a href="http://two.com">two</a> returns Map("url" -> "http://one.com")
+
 ###getAttributes
+
+Get the text content of all the occurances of an attribute.
+
+Parameters: 
++ att: The attribute to scrape
++ tag: The tag containing the attribute to scrape
+
+####Example
+
+```json
+{
+    "key": "urls",
+    "command": "getAttributes",
+    "att": "href",
+    "tag": "a"
+}
+```
+
+Get the text value of all the occurences of <a href=""> tag and returns it under key "urls".
+
+<a href="http://one.com">one</a> and <a href="http://two.com">two</a> returns Map("urls" -> List("http://one.com","http://two.com"))
 
 ###getTagInContext
 
@@ -139,3 +218,6 @@ Currently, Dibbuk supports 12 scraping commands:
     ]
 }
 ```
+
+##TODO
+1. Add the possibility for command to operate within a given scope.
