@@ -37,7 +37,7 @@ class Dibbuk
     
     def run(): Map[String,Any] =
     {
-        scrape( extractors )
+        scrape( extractors ).collect { case (key, Some(value)) => key -> value }
     }
         
     def scrape( extractors: Seq[JsObject] ): Map[String,Any] =
@@ -128,92 +128,68 @@ class Dibbuk
         }
     }
     
-    def getTagInContext( tag: String, ctx: String ): String =
+    def getTagInContext( tag: String, ctx: String ): Option[String] =
     {
-        ( doc tryExtract element( ctx ) tryExtract text( tag ) ).flatten match {
-          case None => ""
-          case Some(result) => result
-        }
+        ( doc tryExtract element( ctx ) tryExtract text( tag ) ).flatten
     }
     
-    def getTagInContexts( tag: String, ctx: String ): Iterable[String] =
+    def getTagInContexts( tag: String, ctx: String ): Option[Iterable[String]] =
     {
         ( doc tryExtract elements( ctx ) ) match {
-            case None => Iterable()
-            case Some(res) => ( res.map( _ >?> text( tag ) ) ).flatten
+            case None => None
+            case Some(res) => Option(( res.map( _ >?> text( tag ) ) ).flatten)
         }
     }
     
-    def getTags( tag: String ): Iterable[String] =
+    def getTags( tag: String ): Option[Iterable[String]] =
     {
-        (doc tryExtract texts( tag )) match {
-          case None => Iterable()
-          case Some(result) => result
-        }
+        (doc tryExtract texts( tag ))
     }
     
-    def getTagsInContext( tag: String, ctx: String ): Iterable[String] =
+    def getTagsInContext( tag: String, ctx: String ): Option[Iterable[String]] =
     {
-        (doc tryExtract element( ctx ) tryExtract texts( tag )).flatten match {
-          case None => Iterable()
-          case Some(result) => result
-        }
+        (doc tryExtract element( ctx ) tryExtract texts( tag )).flatten
     }
     
-    def getTagsInContexts( tag: String, ctx: String ): Iterable[String] =
+    def getTagsInContexts( tag: String, ctx: String ): Option[Iterable[String]] =
     {
         ( doc tryExtract elements( ctx ) ) match {
-            case None => Iterable()
-            case Some(res) => ( res.flatMap( _ >?> texts( tag ) ) ).flatten
+            case None => None
+            case Some(res) => Option( ( res.flatMap( _ >?> texts( tag ) ) ).flatten )
         }
     }
     
-    def getAttribute( tag: String, att: String ): String = 
+    def getAttribute( tag: String, att: String ): Option[String] = 
     {
-        ( doc tryExtract attr( att )( tag ) ) match {
-          case None => ""
-          case Some(result) => result
-        }
+        ( doc tryExtract attr( att )( tag ) )
     } 
    
-    def getAttributeInContext( tag: String, att: String, ctx: String ): String = 
+    def getAttributeInContext( tag: String, att: String, ctx: String ): Option[String] = 
     {
-        ( doc tryExtract element( ctx ) tryExtract attr( att )( tag ) ).flatten match {
-          case None => ""
-          case Some(result) => result
-        }
+        ( doc tryExtract element( ctx ) tryExtract attr( att )( tag ) ).flatten
     }
     
-    def getAttributeInContexts( tag: String, att: String, ctx: String ): Iterable[String] = 
+    def getAttributeInContexts( tag: String, att: String, ctx: String ): Option[Iterable[String]] = 
     {
         ( doc tryExtract elements( ctx ) ) match {
-            case None => Iterable()
-            case Some(res) => ( res.flatMap( _ >?> attr( att )( tag ) ) )
+            case None => None
+            case Some(res) => Option( res.flatMap( _ >?> attr( att )( tag ) ) )
         }
     }
     
-    def getAttributes( tag: String, att: String ): Iterable[String] = 
+    def getAttributes( tag: String, att: String ): Option[Iterable[String]] = 
     {
-        ( doc tryExtract attrs( att )( tag ) ) match {
-          case None => Iterable()
-          case Some(result) => result
-        }
+        ( doc tryExtract attrs( att )( tag ) )
     }
     
-    def getAttributesInContext( tag: String, att: String, ctx: String ): Iterable[String] = 
+    def getAttributesInContext( tag: String, att: String, ctx: String ): Option[Iterable[String]] = 
     {
-        ( doc tryExtract element( ctx ) tryExtract attrs( att )( tag ) ).flatten match {
-          case None => Iterable()
-          case Some(result) => result
-        }
+        ( doc tryExtract element( ctx ) tryExtract attrs( att )( tag ) ).flatten
     }
     
-    def getAttributesInContexts( tag: String, att: String, ctx: String ): Iterable[String] = 
+    def getAttributesInContexts( tag: String, att: String, ctx: String ): Option[Iterable[String]] = 
     {
-        ( doc tryExtract elements( ctx ) tryExtract attrs( att )( tag ) ).flatten match {
-          case None => Iterable()
-          case Some(result) => result
-        }
+        ( doc tryExtract elements( ctx ) tryExtract attrs( att )( tag ) ).flatten
     }
     
 }

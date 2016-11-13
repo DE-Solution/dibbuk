@@ -32,7 +32,9 @@ For each extractor, one defines:
 Currently, Dibbuk supports 12 scraping commands:
 
 ###getTag
-Get the text content of the first occurance of a tag.
+
+Gets the text content of the first occurance of a tag.
+No entry is added to the result Map if the tag cannot be found in the scraped page.
 
 Parameter: 
 + tag: The tag to scrape
@@ -49,11 +51,12 @@ Parameter:
 
 Get the text enclosed between the first occurence of the <b></b> tags and returns it under key "bold".
 
-<b>one</b> and <b>two</b> returns Map("bold" -> "one")
+`<b>one</b> and <b>two</b>` returns `Map("bold" -> "one")`
 
 ###getTags
 
-Get the text content of all the occurances of a tag.
+Gets the text content of all the occurances of a tag.
+Returns an empty list (`List()`) if no tag is found in the scraped page.
 
 Parameter: 
 + tag: The tag to scrape
@@ -70,11 +73,12 @@ Parameter:
 
 Get the text enclosed between all the occurences of the <b></b> tags and returns them under key "bolds".
 
-<b>one</b> and <b>two</b> returns Map("bolds" -> List("one","two"))
+`<b>one</b> and <b>two</b>` returns `Map("bolds" -> List("one","two"))`
 
 ###getAttribute
 
-Get the text content of the first occurance of an attribute.
+Gets the text content of the first occurance of an attribute.
+No entry is added to the result Map if the attribute cannot be found in the scraped page.
 
 Parameters: 
 + att: The attribute to scrape
@@ -91,13 +95,14 @@ Parameters:
 }
 ```
 
-Get the text value of the first occurence of <a href=""> tag and returns it under key "url".
+Gets the text value of the first occurence of <a href=""> tag and returns it under key "url".
 
-<a href="http://one.com">one</a> and <a href="http://two.com">two</a> returns Map("url" -> "http://one.com")
+`<a href="http://one.com">one</a> and <a href="http://two.com">two</a>` returns `Map("url" -> "http://one.com")`
 
 ###getAttributes
 
-Get the text content of all the occurances of an attribute.
+Gets the text content of all the occurances of an attribute.
+Returns an empty list (`List()`) if no attribute is found in the scraped page.
 
 Parameters: 
 + att: The attribute to scrape
@@ -114,11 +119,33 @@ Parameters:
 }
 ```
 
-Get the text value of all the occurences of <a href=""> tag and returns it under key "urls".
+Get the text value of all the occurences of `<a href="...">` tag and returns it under key "urls".
 
-<a href="http://one.com">one</a> and <a href="http://two.com">two</a> returns Map("urls" -> List("http://one.com","http://two.com"))
+`<a href="http://one.com">one</a> and <a href="http://two.com">two</a>` returns `Map("urls" -> List("http://one.com","http://two.com"))`
 
 ###getTagInContext
+
+Get sthe text content of the first occurance of a tag in the scope of the first occurence of a context tag.context context.
+No entry is added to the result Map if the tag cannot be found in the context.
+
+Parameter: 
++ tag: The tag to scrape
++ ctx: The tag context
+
+####Example
+
+```json
+        {
+            "key": "inContext",
+            "command": "getTagInContext",
+            "tag": "b",
+            "ctx": "li"
+        }
+```
+
+Get the text enclosed between the first occurence of the <b></b> tags and returns it under key "bold".
+
+`<b>one</b> and <b>two</b>` returns `Map("bold" -> "one")`
 
 ###getTagsInContext
 
@@ -219,5 +246,7 @@ Get the text value of all the occurences of <a href=""> tag and returns it under
 }
 ```
 
-##TODO
+##TODO List (in no particular order)
 1. Add the possibility for command to operate within a given scope.
+2. Add the possibility to postprocess extractor results
+3. Add the possibility to further filter extractor results
