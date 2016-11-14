@@ -1,4 +1,4 @@
-# dibbuk
+# <dibbuk/>
 Dibbuk is a wrapper for [scala-scraper](https://github.com/ruippeixotog/scala-scraper).
 It permits to define simple web scrapers by writing scraping instructions in a configuration file.
 
@@ -29,11 +29,11 @@ For each extractor, one defines:
 + A command: Corresponding to the scraping action to carry out; and 
 + one or more parameters for the selected command.
 
-Currently, Dibbuk supports 12 scraping commands:
+Currently, Dibbuk supports 12 extractors:
 
 ###getTag
 
-Gets the text content of the first occurance of a tag.
+Gets the text content of the first occurrence of a tag.
 No entry is added to the result Map if the tag cannot be found in the scraped page.
 
 Parameter: 
@@ -49,13 +49,13 @@ Parameter:
 }
 ```
 
-Get the text enclosed between the first occurence of the <b></b> tags and returns it under key "bold".
+Get the text enclosed between the first occurrence of the <b></b> tags and returns it under key "bold".
 
 `<b>one</b> and <b>two</b>` returns `Map("bold" -> "one")`
 
 ###getTags
 
-Gets the text content of all the occurances of a tag.
+Gets the text content of all the occurrences of a tag.
 Returns an empty list (`List()`) if no tag is found in the scraped page.
 
 Parameter: 
@@ -71,13 +71,13 @@ Parameter:
 }
 ```
 
-Get the text enclosed between all the occurences of the <b></b> tags and returns them under key "bolds".
+Get the text enclosed between all the occurrences of the <b></b> tags and returns them under key "bolds".
 
 `<b>one</b> and <b>two</b>` returns `Map("bolds" -> List("one","two"))`
 
 ###getAttribute
 
-Gets the text content of the first occurance of an attribute.
+Gets the text content of the first occurrence of an attribute.
 No entry is added to the result Map if the attribute cannot be found in the scraped page.
 
 Parameters: 
@@ -95,13 +95,13 @@ Parameters:
 }
 ```
 
-Gets the text value of the first occurence of <a href=""> tag and returns it under key "url".
+Gets the text value of the first occurrence of <a href=""> tag and returns it under key "url".
 
 `<a href="http://one.com">one</a> and <a href="http://two.com">two</a>` returns `Map("url" -> "http://one.com")`
 
 ###getAttributes
 
-Gets the text content of all the occurances of an attribute.
+Gets the text content of all the occurrences of an attribute.
 Returns an empty list (`List()`) if no attribute is found in the scraped page.
 
 Parameters: 
@@ -119,50 +119,275 @@ Parameters:
 }
 ```
 
-Get the text value of all the occurences of `<a href="...">` tag and returns it under key "urls".
+Get the text value of all the occurrences of `<a href="...">` tag and returns it under key "urls".
 
 `<a href="http://one.com">one</a> and <a href="http://two.com">two</a>` returns `Map("urls" -> List("http://one.com","http://two.com"))`
 
 ###getTagInContext
 
-Get sthe text content of the first occurance of a tag in the scope of the first occurence of a context tag.context context.
+Gets the text content of the first occurrence of a tag in the scope of the first occurrence of a context tag.
 No entry is added to the result Map if the tag cannot be found in the context.
 
 Parameter: 
 + tag: The tag to scrape
-+ ctx: The tag context
++ ctx: The context tag
 
 ####Example
 
 ```json
-        {
-            "key": "inContext",
-            "command": "getTagInContext",
-            "tag": "b",
-            "ctx": "li"
-        }
+{
+    "key": "inContext",
+    "command": "getTagInContext",
+    "tag": "b",
+	"ctx": "li"
+}
 ```
 
-Get the text enclosed between the first occurence of the <b></b> tags and returns it under key "bold".
+Get the text enclosed between the first occurrence of the <b></b> tags when it is in the context of the first occurrence of the `<li></li>` tags and returns it under key "inContext".
 
-`<b>one</b> and <b>two</b>` returns `Map("bold" -> "one")`
+```html
+<b>one</b>
+<ul>
+  <li><b>two</b>, <b>three</b>
+  <li><b>four</b>, <b>five</b>
+</ul>
+<b>six</b>
+```
+returns `Map("inContext" -> "two"))`
 
 ###getTagsInContext
 
-###getAttributeInContext
+Gets the text content of all the occurrences of a tag in the scope of the first occurrence of a context tag.
+An empty list is added to the result Map if the context cannot be found of if the tag cannot be found in the target context.
 
-###getAttributesInContext
+Parameter: 
++ tag: The tag to scrape
++ ctx: The context tag
+
+####Example
+
+```json
+{
+    "key": "allInContext",
+    "command": "getTagsInContext",
+    "tag": "b",
+    "ctx": "li"
+}
+```
+
+Get the text enclosed between all the occurrences of the <b></b> tags when it is in the context of the first occurrence of the `<li></li>` tags and returns it under key "allInContext".
+
+```html
+<b>one</b>
+<ul>
+  <li><b>two</b>, <b>three</b>
+  <li><b>four</b>, <b>five</b>
+</ul>
+<b>six</b>
+```
+returns `Map("allInContext" -> List("two", "three"))`
 
 ###getTagInContexts
 
+Gets the text content of the first occurrence of a tag in the scope of each of the occurrences of a context tag.
+An empty list is added to the result Map if the context cannot be found of if the tag cannot be found in any of the target contexts.
+
+Parameter: 
++ tag: The tag to scrape
++ ctx: The context tag
+
+####Example
+
+```json
+{
+    "key": "inAllContexts",
+    "command": "getTagInContexts",
+    "tag": "b",
+    "ctx": "li"
+}
+```
+
+Get the text enclosed between the first occurrence of the <b></b> tags when it is in the context of each of the occurrences of the `<li></li>` tags and returns it under key "inAllContexts".
+
+```html
+<b>one</b>
+<ul>
+  <li><b>two</b>, <b>three</b>
+  <li><b>four</b>, <b>five</b>
+</ul>
+<b>six</b>
+```
+returns `Map("inAllContexts" -> List("two", "four"))`
+
 ###getTagsInContexts
+
+Gets the text content of all the occurrences of a tag in the scope of each of the occurrences of a context tag.
+An empty list is added to the result Map if the context cannot be found of if the tag cannot be found in any of the target contexts.
+
+Parameter: 
++ tag: The tag to scrape
++ ctx: The context tag
+
+####Example
+
+```json
+{
+    "key": "allInContexts",
+    "command": "getTagsInContexts",
+    "tag": "b",
+    "ctx": "li"
+}
+```
+
+Get the text enclosed between all the occurrences of the <b></b> tags when it is in the context of any occurrence of the `<li></li>` tags and returns it under key "allInContexts".
+
+```html
+<b>one</b>
+<ul>
+  <li><b>two</b>, <b>three</b>
+  <li><b>four</b>, <b>five</b>
+</ul>
+<b>six</b>
+```
+returns `Map("allInContexts" -> List("two", "three", "four", "five"))`
+
+###getAttributeInContext
+
+Gets the text content of the first occurrence of an attribute in the scope of the first occurrence of a context tag.
+No entry is added to the result Map if the attribute cannot be found in the context.
+
+Parameters: 
++ att: The attribute to scrape
++ tag: The tag containing the attribute to scrape
++ ctx: The context tag
+
+####Example
+
+```json
+{
+    "key": "urlInContext",
+    "command": "getAttributeInContext",
+    "att": "href",
+    "tag": "a",
+    "ctx": "li"
+}
+```
+
+Gets the text value of the first occurrence of <a href=""> tag when it is in the context of the first occurrence of the `<li></li>` tags and returns it under key "urlInContext".
+
+```html
+<a href="one.html">one</a>
+<ul>
+  <li><a href="two.html">two</a>, <a href="three.html">three</a>
+  <li><a href="four.html">four</a>, <a href="five.html">five</a>
+</ul>
+<a href="six.html">six</a>
+```
+returns `Map("urlInContext" -> "two.html")`
+
+###getAttributesInContext
+
+Gets the text content of all the occurrences of an attribute in the scope of the first occurrence of a context tag.
+An empty list is added to the result Map if the context cannot be found of if the tag cannot be found in the context.
+
+Parameters: 
++ att: The attribute to scrape
++ tag: The tag containing the attribute to scrape
++ ctx: The context tag
+
+####Example
+
+```json
+{
+    "key": "urlsInContext",
+    "command": "getAttributesInContext",
+    "att": "href",
+    "tag": "a",
+    "ctx": "li"
+}
+```
+
+Gets the text value of all the occurrences of the <a href=""> tag when they are in the context of the first occurrence of the `<li></li>` tags and returns it under key "urlsInContext".
+
+```html
+<a href="one.html">one</a>
+<ul>
+  <li><a href="two.html">two</a>, <a href="three.html">three</a>
+  <li><a href="four.html">four</a>, <a href="five.html">five</a>
+</ul>
+<a href="six.html">six</a>
+```
+returns `Map("urlInContext" -> List("two.html", "three.html"))`
 
 ###getAttributeInContexts
 
+Gets the text content of the first occurrence of an attribute in each of the occurrences of a context tag.
+An empty list is added to the result Map if the context cannot be found of if the tag cannot be found in the context.
+
+Parameters: 
++ att: The attribute to scrape
++ tag: The tag containing the attribute to scrape
++ ctx: The context tag
+
+####Example
+
+```json
+{
+    "key": "urlInContexts",
+    "command": "getAttributeInContexts",
+    "att": "href",
+    "tag": "a",
+    "ctx": "li"
+}
+```
+
+Gets the text value of the first occurrence of the <a href=""> tag in each of the occurrences of the `<li></li>` tags and returns it under key "urlInContexts".
+
+```html
+<a href="one.html">one</a>
+<ul>
+  <li><a href="two.html">two</a>, <a href="three.html">three</a>
+  <li><a href="four.html">four</a>, <a href="five.html">five</a>
+</ul>
+<a href="six.html">six</a>
+```
+returns `Map("urlInContext" -> List("two.html", "four.html"))`
+
 ###getAttributesInContexts
 
+Gets the text content of all the occurrences of an attribute in the scope of all the occurrences of a context tag.
+An empty list is added to the result Map if the context cannot be found of if the tag cannot be found in any of the contexts.
 
-## Example of Dibbuk Configuration File
+Parameters: 
++ att: The attribute to scrape
++ tag: The tag containing the attribute to scrape
++ ctx: The context tag
+
+####Example
+
+```json
+{
+    "key": "urlsInContexts",
+    "command": "getAttributesInContexts",
+    "att": "href",
+    "tag": "a",
+    "ctx": "li"
+}
+```
+
+Gets the text value of all the occurrences of the <a href=""> attribute when they are in the context of any of the occurrences of the `<li></li>` tags and returns it under key "urlsInContexts".
+
+```html
+<a href="one.html">one</a>
+<ul>
+  <li><a href="two.html">two</a>, <a href="three.html">three</a>
+  <li><a href="four.html">four</a>, <a href="five.html">five</a>
+</ul>
+<a href="six.html">six</a>
+```
+returns `Map("urlInContext" -> List("two.html", "three.html", "four.html", "five.html"))`
+
+## Example of a complete Dibbuk Configuration File
 
 ```json
 {
@@ -180,7 +405,7 @@ Get the text enclosed between the first occurence of the <b></b> tags and return
             "ctx": "li"
         },
         {
-            "key": "inAllContext",
+            "key": "inAllContexts",
             "command": "getTagInContexts",
             "tag": "a",
             "ctx": "li"

@@ -40,7 +40,7 @@ class Dibbuk
         scrape( extractors ).collect { case (key, Some(value)) => key -> value }
     }
         
-    def scrape( extractors: Seq[JsObject] ): Map[String,Any] =
+    private[this] def scrape( extractors: Seq[JsObject] ): Map[String,Any] =
     {
         val extractor = extractors.head
         val key = ( extractor \ "key" ).as[String]
@@ -120,7 +120,7 @@ class Dibbuk
         }
     }
 
-    def getTag( tag: String ): String =
+    private[this] def getTag( tag: String ): String =
     {
         ( doc tryExtract text( tag ) ) match {
           case None => ""
@@ -128,12 +128,12 @@ class Dibbuk
         }
     }
     
-    def getTagInContext( tag: String, ctx: String ): Option[String] =
+    private[this] def getTagInContext( tag: String, ctx: String ): Option[String] =
     {
         ( doc tryExtract element( ctx ) tryExtract text( tag ) ).flatten
     }
     
-    def getTagInContexts( tag: String, ctx: String ): Option[Iterable[String]] =
+    private[this] def getTagInContexts( tag: String, ctx: String ): Option[Iterable[String]] =
     {
         ( doc tryExtract elements( ctx ) ) match {
             case None => None
@@ -141,17 +141,17 @@ class Dibbuk
         }
     }
     
-    def getTags( tag: String ): Option[Iterable[String]] =
+    private[this] def getTags( tag: String ): Option[Iterable[String]] =
     {
         (doc tryExtract texts( tag ))
     }
     
-    def getTagsInContext( tag: String, ctx: String ): Option[Iterable[String]] =
+    private[this] def getTagsInContext( tag: String, ctx: String ): Option[Iterable[String]] =
     {
         (doc tryExtract element( ctx ) tryExtract texts( tag )).flatten
     }
     
-    def getTagsInContexts( tag: String, ctx: String ): Option[Iterable[String]] =
+    private[this] def getTagsInContexts( tag: String, ctx: String ): Option[Iterable[String]] =
     {
         ( doc tryExtract elements( ctx ) ) match {
             case None => None
@@ -159,17 +159,17 @@ class Dibbuk
         }
     }
     
-    def getAttribute( tag: String, att: String ): Option[String] = 
+    private[this] def getAttribute( tag: String, att: String ): Option[String] = 
     {
         ( doc tryExtract attr( att )( tag ) )
     } 
    
-    def getAttributeInContext( tag: String, att: String, ctx: String ): Option[String] = 
+    private[this] def getAttributeInContext( tag: String, att: String, ctx: String ): Option[String] = 
     {
         ( doc tryExtract element( ctx ) tryExtract attr( att )( tag ) ).flatten
     }
     
-    def getAttributeInContexts( tag: String, att: String, ctx: String ): Option[Iterable[String]] = 
+    private[this] def getAttributeInContexts( tag: String, att: String, ctx: String ): Option[Iterable[String]] = 
     {
         ( doc tryExtract elements( ctx ) ) match {
             case None => None
@@ -177,17 +177,17 @@ class Dibbuk
         }
     }
     
-    def getAttributes( tag: String, att: String ): Option[Iterable[String]] = 
+    private[this] def getAttributes( tag: String, att: String ): Option[Iterable[String]] = 
     {
         ( doc tryExtract attrs( att )( tag ) )
     }
     
-    def getAttributesInContext( tag: String, att: String, ctx: String ): Option[Iterable[String]] = 
+    private[this] def getAttributesInContext( tag: String, att: String, ctx: String ): Option[Iterable[String]] = 
     {
         ( doc tryExtract element( ctx ) tryExtract attrs( att )( tag ) ).flatten
     }
     
-    def getAttributesInContexts( tag: String, att: String, ctx: String ): Option[Iterable[String]] = 
+    private[this] def getAttributesInContexts( tag: String, att: String, ctx: String ): Option[Iterable[String]] = 
     {
         ( doc tryExtract elements( ctx ) tryExtract attrs( att )( tag ) ).flatten
     }
